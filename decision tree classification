@@ -1,0 +1,59 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score
+
+
+import pandas as pd
+
+X, y = make_classification(n_samples=100, n_features=4, n_informative=3,
+                           n_redundant=0, n_classes=2, random_state=42)
+
+X, y = make_classification(n_samples=100, n_features=4, n_informative=3,
+                           n_redundant=0, n_classes=2, random_state=42)
+
+df = pd.DataFrame(X, columns=['Feature_1', 'Feature_2', 'Feature_3', 'Feature_4'])
+df['Label'] = y
+
+print(df.head())
+
+X = df.drop('Label', axis=1)
+y = df['Label']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+clf = DecisionTreeClassifier(max_depth=3, random_state=0)
+clf.fit(X_train, y_train)
+
+plt.figure(figsize=(12,6))
+plot_tree(clf, filled=True, feature_names=X.columns, class_names=['Class 0', 'Class 1'])
+plt.show()
+
+y_pred = clf.predict(X_test)
+print("Test Accuracy:", accuracy_score(y_test, y_pred))
+
+import pandas as pd
+
+# Say your features during training were named like this:
+feature_names = ['Feature_1', 'Feature_2', 'Feature_3', 'Feature_4']
+
+# When you want to predict, instead of giving a list:
+input_data = [[0.2, -1.5, 0.3, 1.2]]
+
+# Convert it to DataFrame with feature names
+input_df = pd.DataFrame(input_data, columns=feature_names)
+
+# Now predict using the DataFrame
+prediction = clf.predict(input_df)
+print("Prediction:", prediction[0])
+
+
+values = input("Enter 4 feature values separated by commas: ")
+vals_list = list(map(float, values.split(",")))
+query_df = pd.DataFrame([vals_list], columns=['Feature_1', 'Feature_2', 'Feature_3', 'Feature_4'])
+print("Prediction for your input:", clf.predict(query_df)[0])
+
+
+output:0.5, -1.0, 0.1, 0.9
