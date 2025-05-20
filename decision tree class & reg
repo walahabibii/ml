@@ -1,0 +1,93 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree
+from sklearn.metrics import accuracy_score, mean_squared_error, r2_score
+
+
+from sklearn.datasets import make_classification
+
+from sklearn.datasets import make_classification
+import pandas as pd
+
+# Corrected: Set n_redundant=0 so total features = 4
+X_class, y_class = make_classification(n_samples=100, 
+                                       n_features=4, 
+                                       n_informative=3, 
+                                       n_redundant=0, 
+                                       random_state=42)
+
+df_class = pd.DataFrame(X_class, columns=['Feature_1', 'Feature_2', 'Feature_3', 'Feature_4'])
+df_class['Label'] = y_class
+
+# Show the first 5 rows
+df_class.head()
+
+
+X_train_class, X_test_class, y_train_class, y_test_class = train_test_split(
+    df_class[['Feature_1', 'Feature_2', 'Feature_3', 'Feature_4']], df_class['Label'], test_size=0.2, random_state=0
+)
+
+# Evaluate classification
+y_pred_class = clf.predict(X_test_class)
+print("Classification Accuracy:", accuracy_score(y_test_class, y_pred_class))
+
+
+# Visualize classification tree
+plt.figure(figsize=(12, 6))
+plot_tree(clf, feature_names=X_train_class.columns, filled=True)
+plt.title("Decision Tree - Classification")
+plt.show()
+
+# Sample Query
+query_class = pd.DataFrame([[0.2, -1.5, 0.3, 1.2]], columns=X_train_class.columns)
+print("Classification Prediction for query:", clf.predict(query_class)[0])
+
+
+
+
+# REGRESSION PART
+from sklearn.datasets import make_regression
+
+# Create synthetic regression dataset
+X_reg, y_reg = make_regression(n_samples=100, n_features=1, noise=20, random_state=42)
+df_reg = pd.DataFrame(X_reg, columns=['Feature'])
+df_reg['Target'] = y_reg
+
+# Split the dataset
+X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(df_reg[['Feature']], df_reg['Target'], test_size=0.2, random_state=0)
+
+
+# Train the Decision Tree Regressor
+reg = DecisionTreeRegressor(max_depth=4, random_state=0)
+reg.fit(X_train_reg, y_train_reg)
+
+
+# Evaluate regression
+y_pred_reg = reg.predict(X_test_reg)
+print("Regression MSE:", mean_squared_error(y_test_reg, y_pred_reg))
+print("Regression R2 Score:", r2_score(y_test_reg, y_pred_reg))
+
+
+# Visualize regression tree
+plt.figure(figsize=(12, 6))
+plot_tree(reg, feature_names=X_train_reg.columns, filled=True)
+plt.title("Decision Tree - Regression")
+plt.show()
+
+
+#Plot predictions
+plt.scatter(X_test_reg, y_test_reg, label='Actual', color='blue')
+plt.scatter(X_test_reg, y_pred_reg, label='Predicted', color='red')
+plt.xlabel("Feature")
+plt.ylabel("Target")
+plt.title("Actual vs Predicted - Regression")
+plt.legend()
+plt.show()
+
+
+
+# Sample Query
+query_reg = pd.DataFrame([[0.5]], columns=['Feature'])
+print("Regression Prediction for input 0.5:", reg.predict(query_reg)[0])
